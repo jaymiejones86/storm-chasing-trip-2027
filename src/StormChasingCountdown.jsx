@@ -4,8 +4,8 @@ import { CalendarDays, CloudLightning, MapPin, Settings2 } from "lucide-react";
 const DEFAULT_CONFIG = {
   title: "Storm Chasing",
   subtitle: "Texas & Oklahoma Tornado Alley Trip",
-  startDate: "2027-04-15T00:00",
-  endDate: "2027-04-23T23:59",
+  startDate: "2027-04-12T00:00",
+  endDate: "2027-04-26T23:59",
   location: "Texas / Oklahoma Plains",
   note: "Big skies. Supercells. Structure. Tornado Alley.",
 };
