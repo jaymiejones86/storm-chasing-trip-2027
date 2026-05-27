@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { CalendarDays, CloudLightning, MapPin, Settings2 } from "lucide-react";
+import { CalendarDays, CloudLightning, MapPin, PiggyBank, Settings2 } from "lucide-react";
 
 const DEFAULT_CONFIG = {
   title: "Storm Chasing",
@@ -8,6 +8,8 @@ const DEFAULT_CONFIG = {
   endDate: "2027-04-26T23:59",
   location: "Texas / Oklahoma Plains",
   note: "Big skies. Supercells. Structure. Tornado Alley.",
+  budgetTarget: 8000,
+  budgetSaved: 3300,
 };
 
 function getTimeLeft(targetDate) {
@@ -40,10 +42,18 @@ function formatDateRange(start, end) {
 function getSavedConfig() {
   try {
     const saved = window.localStorage.getItem("storm-countdown-config");
-    return saved ? JSON.parse(saved) : DEFAULT_CONFIG;
+    return saved ? { ...DEFAULT_CONFIG, ...JSON.parse(saved) } : DEFAULT_CONFIG;
   } catch {
     return DEFAULT_CONFIG;
   }
+}
+
+function formatCurrency(amount) {
+  return new Intl.NumberFormat("en-AU", {
+    style: "currency",
+    currency: "AUD",
+    maximumFractionDigits: 0,
+  }).format(amount);
 }
 
 function Button({ children, className = "", type = "button", ...props }) {
@@ -79,6 +89,10 @@ export default function StormChasingCountdown() {
     [config.startDate, config.endDate],
   );
   const hasStarted = timeLeft.total <= 0;
+  const budgetTarget = Number(config.budgetTarget) || 0;
+  const budgetSaved = Number(config.budgetSaved) || 0;
+  const budgetProgress = budgetTarget > 0 ? Math.min((budgetSaved / budgetTarget) * 100, 100) : 0;
+  const budgetRemaining = Math.max(budgetTarget - budgetSaved, 0);
 
   function saveConfig() {
     setConfig(draft);
@@ -144,6 +158,44 @@ export default function StormChasingCountdown() {
               <CountdownUnit value={timeLeft.seconds} label="Secs" />
             </div>
 
+            <section className="budget-panel" aria-label="Trip budget progress">
+              <div className="budget-heading">
+                <div>
+                  <p className="eyebrow">Budget</p>
+                  <h3>{formatCurrency(budgetSaved)} saved</h3>
+                </div>
+                <div className="budget-icon">
+                  <PiggyBank size={22} />
+                </div>
+              </div>
+
+              <div
+                className="budget-progress"
+                aria-label={`${Math.round(budgetProgress)}% of budget saved`}
+                aria-valuemax={budgetTarget}
+                aria-valuemin={0}
+                aria-valuenow={Math.min(budgetSaved, budgetTarget)}
+                role="progressbar"
+              >
+                <div className="budget-progress-fill" style={{ width: `${budgetProgress}%` }} />
+              </div>
+
+              <div className="budget-stats">
+                <div>
+                  <span>Target</span>
+                  <strong>{formatCurrency(budgetTarget)}</strong>
+                </div>
+                <div>
+                  <span>Remaining</span>
+                  <strong>{formatCurrency(budgetRemaining)}</strong>
+                </div>
+                <div>
+                  <span>Progress</span>
+                  <strong>{Math.round(budgetProgress)}%</strong>
+                </div>
+              </div>
+            </section>
+
             {isEditing && (
               <form className="config-panel" onSubmit={(event) => event.preventDefault()}>
                 {[
@@ -153,10 +205,14 @@ export default function StormChasingCountdown() {
                   ["Note", "note"],
                   ["Start date", "startDate", "datetime-local"],
                   ["End date", "endDate", "datetime-local"],
+                  ["Budget target (AUD)", "budgetTarget", "number"],
+                  ["Amount saved (AUD)", "budgetSaved", "number"],
                 ].map(([label, key, type = "text"]) => (
                   <label key={key}>
                     <span>{label}</span>
                     <input
+                      min={type === "number" ? "0" : undefined}
+                      step={type === "number" ? "100" : undefined}
                       type={type}
                       value={draft[key] ?? ""}
                       onChange={(event) => setDraft({ ...draft, [key]: event.target.value })}

@@ -248,6 +248,76 @@ h2 {
   letter-spacing: 0.3em;
 }
 
+.budget-panel {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.25);
+}
+
+.budget-heading,
+.budget-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.budget-heading h3 {
+  margin: 6px 0 0;
+  font-size: clamp(1.8rem, 5vw, 2.7rem);
+  line-height: 1;
+}
+
+.budget-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  color: #111827;
+  background: var(--amber);
+}
+
+.budget-progress {
+  position: relative;
+  height: 14px;
+  margin-top: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.budget-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #f6d365, #fde68a);
+}
+
+.budget-stats {
+  margin-top: 16px;
+}
+
+.budget-stats div {
+  display: grid;
+  gap: 4px;
+}
+
+.budget-stats span {
+  color: rgba(255, 255, 255, 0.54);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.budget-stats strong {
+  font-size: 0.98rem;
+}
+
 .config-panel {
   display: grid;
   gap: 16px;
@@ -313,8 +383,10 @@ h2 {
 
 @media (max-width: 560px) {
   .card-heading,
-  .config-actions {
+  .config-actions,
+  .budget-stats {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .button {
