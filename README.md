@@ -31,3 +31,12 @@ This repo includes `netlify.toml`, so Netlify can build and publish the site aut
 5. Deploy.
 
 The countdown settings are saved in each visitor's browser with `localStorage`, so changing them in the UI does not require a redeploy.
+
+This is intentionally a static, client-only application: settings do not sync
+between browsers or devices, and clearing browser storage restores repository
+defaults. The project has no configured lint or automated test command; use
+`npm run build` as the supported source/configuration gate and exercise changed
+UI flows in a real browser when applicable.
+
+Read [AGENTS.md](AGENTS.md), [CODING_STANDARDS.md](CODING_STANDARDS.md), and the
+[decision registry](docs/decisions/README.md) before making changes.
